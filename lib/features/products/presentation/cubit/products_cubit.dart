@@ -121,11 +121,18 @@ class ProductsCubit extends Cubit<ProductsState> {
         stock: stock,
       );
 
+      String successMessage = "Product added successfully";
+
       if (imagePath != null) {
-        await uploadProductImageUseCase(product.id, imagePath);
+        try {
+          await uploadProductImageUseCase(product.id, imagePath);
+        } catch (e) {
+          successMessage =
+              "Product added, but image upload failed: ${e.toString()}";
+        }
       }
 
-      emit(const ProductOperationSuccess("Product added successfully"));
+      emit(ProductOperationSuccess(successMessage));
       fetchProducts();
     } catch (e) {
       emit(ProductsLoadFailure(e.toString()));
@@ -152,11 +159,18 @@ class ProductsCubit extends Cubit<ProductsState> {
         stock: stock,
       );
 
+      String successMessage = "Product updated successfully";
+
       if (imagePath != null) {
-        await uploadProductImageUseCase(id, imagePath);
+        try {
+          await uploadProductImageUseCase(id, imagePath);
+        } catch (e) {
+          successMessage =
+              "Product updated, but image upload failed: ${e.toString()}";
+        }
       }
 
-      emit(const ProductOperationSuccess("Product updated successfully"));
+      emit(ProductOperationSuccess(successMessage));
       fetchProducts();
     } catch (e) {
       emit(ProductsLoadFailure(e.toString()));
