@@ -70,9 +70,6 @@ class _PurchaseFormViewState extends State<PurchaseFormView> {
         return PurchaseItemInput(
           productId: item.product!.id,
           quantity: int.parse(item.qtyController.text),
-          cost: int.parse(
-            item.costController.text.replaceAll(RegExp(r'[^0-9]'), ''),
-          ),
         );
       }).toList();
 
@@ -289,8 +286,14 @@ class _PurchaseFormViewState extends State<PurchaseFormView> {
                           value: item.product,
                           items: availableProducts,
                           labelBuilder: (product) => product.name,
-                          onChanged: (val) =>
-                              setState(() => item.product = val),
+                          onChanged: (val) {
+                            setState(() {
+                              item.product = val;
+                              item.costController.text = val.cost
+                                  .toInt()
+                                  .toString();
+                            });
+                          },
                           validator: (v) => v == null ? 'Required' : null,
                         );
                       }
@@ -313,6 +316,7 @@ class _PurchaseFormViewState extends State<PurchaseFormView> {
                   flex: 2,
                   child: TextFormField(
                     controller: item.costController,
+                    readOnly: true,
                     decoration: InputDecoration(
                       labelText: 'Cost (per Qty)',
                       prefixText: 'Rp ',
